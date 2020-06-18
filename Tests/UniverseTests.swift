@@ -32,12 +32,13 @@ final class UniverseTests: XCTestCase {
         let expect = expectation(description: "")
         universe.die.sink {
             XCTAssertEqual(.init(5, 5), $0)
-            XCTAssertEqual(-1, self.universe.grid[.init(5, 5)])
             expect.fulfill()
         }.store(in: &subs)
         universe.grid[.init(5, 5)] = 0
         universe.tick()
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertEqual(-1, self.universe.grid[.init(5, 5)])
+        }
     }
     
     func testOneDies() {
@@ -65,15 +66,46 @@ final class UniverseTests: XCTestCase {
         universe.die.sink { _ in
             XCTFail()
         }.store(in: &subs)
-        universe.grid[.init(5,5)] = 0
-        universe.grid[.init(6,5)] = 0
-        universe.grid[.init(6,4)] = 0
+        universe.grid[.init(5, 5)] = 0
+        universe.grid[.init(6, 5)] = 0
+        universe.grid[.init(6, 4)] = 0
         universe.tick()
         waitForExpectations(timeout: 1) { _ in
             XCTAssertEqual(1, self.universe.grid[.init(5, 5)])
             XCTAssertEqual(1, self.universe.grid[.init(6, 5)])
             XCTAssertEqual(1, self.universe.grid[.init(6, 4)])
             XCTAssertEqual(0, self.universe.grid[.init(5, 4)])
+        }
+    }
+    
+    func testFourDies() {
+        let expectDies = expectation(description: "")
+        let expectBorn = expectation(description: "")
+        expectDies.expectedFulfillmentCount = 5
+        expectBorn.expectedFulfillmentCount = 4
+        universe.born.sink { _ in
+            expectBorn.fulfill()
+        }.store(in: &subs)
+        universe.die.sink { _ in
+            expectDies.fulfill()
+        }.store(in: &subs)
+        universe.grid[.init(5, 5)] = 0
+        universe.grid[.init(6, 6)] = 0
+        universe.grid[.init(6, 4)] = 0
+        universe.grid[.init(4, 4)] = 0
+        universe.grid[.init(4, 6)] = 0
+        universe.tick()
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertEqual(-1, self.universe.grid[.init(5, 5)])
+            XCTAssertEqual(-1, self.universe.grid[.init(6, 6)])
+            XCTAssertEqual(-1, self.universe.grid[.init(6, 4)])
+            XCTAssertEqual(-1, self.universe.grid[.init(4, 4)])
+            XCTAssertEqual(-1, self.universe.grid[.init(4, 6)])
+            
+            XCTAssertEqual(0, self.universe.grid[.init(6, 5)])
+            XCTAssertEqual(0, self.universe.grid[.init(5, 4)])
+            XCTAssertEqual(0, self.universe.grid[.init(4, 5)])
+            XCTAssertEqual(0, self.universe.grid[.init(5, 6)])
         }
     }
 }

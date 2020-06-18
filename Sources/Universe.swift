@@ -23,6 +23,7 @@ public final class Universe {
     }
     
     public func tick() {
+        var next = grid
         (0 ..< grid.items.count).flatMap { x in
             (0 ..< grid.items.count).reduce(into: []) {
                 $0.append(Point(x, $1))
@@ -31,17 +32,18 @@ public final class Universe {
             if grid[$0] >= 0 {
                 switch grid.contact($0) {
                 case 2, 3:
-                    grid[$0] += 1
+                    next[$0] += 1
                 default:
-                    grid[$0] = -1
+                    next[$0] = -1
                     die.send($0)
                 }
             } else {
                 if grid.contact($0) == 3 {
-                    grid[$0] = 0
+                    next[$0] = 0
                     born.send($0)
                 }
             }
         }
+        grid = next
     }
 }
