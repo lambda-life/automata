@@ -28,19 +28,6 @@ final class UniverseTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
     
-    func testZip() {
-        (0 ..< 10).flatMap { x in
-            (0 ..< 10).reduce(into: []) {
-                $0.append(Point(x, $1))
-            }
-        }.forEach { a in
-            print(a)
-        }
-//        zip((0 ..< 10), (0 ..< 1)).forEach {
-//            print("x: \($1), y: \($1)")
-//        }
-    }
-    
     func testZeroDies() {
         let expect = expectation(description: "")
         universe.die.sink {
@@ -61,11 +48,11 @@ final class UniverseTests: XCTestCase {
             expect.fulfill()
         }.store(in: &subs)
         universe.grid[.init(5, 5)] = 0
-        universe.grid[.init(5, 5)] = 0
+        universe.grid[.init(6, 5)] = 0
         universe.tick()
         waitForExpectations(timeout: 1) { _ in
-            XCTAssertEqual(0, self.universe.grid[.init(5, 5)])
-            XCTAssertEqual(0, self.universe.grid[.init(6, 5)])
+            XCTAssertEqual(-1, self.universe.grid[.init(5, 5)])
+            XCTAssertEqual(-1, self.universe.grid[.init(6, 5)])
         }
     }
     
@@ -75,14 +62,17 @@ final class UniverseTests: XCTestCase {
             XCTAssertEqual(.init(5, 4), $0)
             expect.fulfill()
         }.store(in: &subs)
+        universe.die.sink { _ in
+            XCTFail()
+        }.store(in: &subs)
         universe.grid[.init(5,5)] = 0
         universe.grid[.init(6,5)] = 0
         universe.grid[.init(6,4)] = 0
         universe.tick()
         waitForExpectations(timeout: 1) { _ in
-            XCTAssertEqual(0, self.universe.grid[.init(5, 5)])
-            XCTAssertEqual(0, self.universe.grid[.init(6, 5)])
-            XCTAssertEqual(0, self.universe.grid[.init(6, 4)])
+            XCTAssertEqual(1, self.universe.grid[.init(5, 5)])
+            XCTAssertEqual(1, self.universe.grid[.init(6, 5)])
+            XCTAssertEqual(1, self.universe.grid[.init(6, 4)])
             XCTAssertEqual(0, self.universe.grid[.init(5, 4)])
         }
     }

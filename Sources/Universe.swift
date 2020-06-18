@@ -23,47 +23,25 @@ public final class Universe {
     }
     
     public func tick() {
-        zip(0 ..< grid.items.count, 0 ..< grid.items.count).forEach { x, y in
-            
+        (0 ..< grid.items.count).flatMap { x in
+            (0 ..< grid.items.count).reduce(into: []) {
+                $0.append(Point(x, $1))
+            }
+        }.forEach {
+            if grid[$0] >= 0 {
+                switch grid.contact($0) {
+                case 2, 3:
+                    grid[$0] += 1
+                default:
+                    grid[$0] = -1
+                    die.send($0)
+                }
+            } else {
+                if grid.contact($0) == 3 {
+                    grid[$0] = 0
+                    born.send($0)
+                }
+            }
         }
-//        for x in 0 ..< grid.items.count {
-//            for y in 0 ..< grid.items.count {
-//                if grid[x][y] {
-//                    grid[x][y] = false
-//                    die.send(.init(x, y))
-//                } else {
-//                    var count = 0
-//                    if x > 0 {
-//                        if y > 0 {
-//                            count += grid[x - 1][y - 1] ? 1 : 0
-//                        }
-//                        count += grid[x - 1][y] ? 1 : 0
-//                        if y < size - 1 {
-//                            count += grid[x - 1][y + 1] ? 1 : 0
-//                        }
-//                    }
-//                    if x < size - 1 {
-//                        if y > 0 {
-//                            count += grid[x + 1][y - 1] ? 1 : 0
-//                        }
-//                        count += grid[x + 1][y] ? 1 : 0
-//                        if y < size - 1 {
-//                            count += grid[x + 1][y + 1] ? 1 : 0
-//                        }
-//                    }
-//                    if y > 0 {
-//                        count += grid[x][y - 1] ? 1 : 0
-//                    }
-//                    if y < size - 1 {
-//                        count += grid[x][y + 1] ? 1 : 0
-//                    }
-//
-//                    if count == 3 {
-//                        grid[x][y] = true
-//                        born.send(.init(x, y))
-//                    }
-//                }
-//            }
-//        }
     }
 }
