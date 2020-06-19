@@ -21,21 +21,21 @@ public final class Universe {
         grid = .init(size: size)
     }
     
-    public func random(_ seed: Int) {
+    public func random(_ seed: Int, automaton: Automaton) {
         var grid = self.grid
         (0 ..< seed).forEach { _ in
             var point: Point
             repeat {
                 point = .init(.random(in: 0 ..< grid.items.count), .random(in: 0 ..< grid.items.count))
-            } while grid[point] >= 0
-            grid[point] = 0
+            } while grid[point].active
+            grid[point] = .alive(automaton: automaton)
             born.send(point)
         }
         self.grid = grid
     }
     
-    public func seed(_ point: Point) {
-        grid[point] = 0
+    public func seed(_ point: Point, automaton: Automaton) {
+        grid[point] = .alive(automaton: automaton)
         born.send(point)
     }
     
