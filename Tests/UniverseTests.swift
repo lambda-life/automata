@@ -13,8 +13,7 @@ final class UniverseTests: XCTestCase {
     
     func testInitialSetup() {
         let expect = expectation(description: "")
-        expect.expectedFulfillmentCount = 50
-        XCTAssertEqual(0, universe.grid.percent)
+        expect.expectedFulfillmentCount = 5
         var received = [Point]()
         
         universe.born.sink {
@@ -23,8 +22,7 @@ final class UniverseTests: XCTestCase {
             expect.fulfill()
         }.store(in: &subs)
         
-        universe.seed(50)
-        XCTAssertEqual(0.5, universe.grid.percent)
+        universe.seed(5)
         waitForExpectations(timeout: 1)
     }
     

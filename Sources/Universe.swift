@@ -3,15 +3,24 @@ import CoreGraphics
 import Combine
 
 public final class Universe {
+    public var size: Int { grid.items.count }
     public let born = PassthroughSubject<Point, Never>()
     public let die = PassthroughSubject<Point, Never>()
-    public internal(set) var grid: Grid
+    public let generation = CurrentValueSubject<Int, Never>(0)
+    public let percent = CurrentValueSubject<CGFloat, Never>(0)
+    
+    var grid: Grid {
+        didSet {
+            percent.value = grid.percent
+        }
+    }
     
     public init(size: Int) {
         grid = .init(size: size)
     }
     
     public func seed(_ count: Int) {
+        var grid = self.grid
         (0 ..< count).forEach { _ in
             var point: Point
             repeat {
@@ -20,6 +29,7 @@ public final class Universe {
             grid[point] = 0
             born.send(point)
         }
+        self.grid = grid
     }
     
     public func tick() {
@@ -45,5 +55,6 @@ public final class Universe {
             }
         }
         grid = next
+        generation.value += 1
     }
 }
