@@ -19,7 +19,7 @@ public struct Grid {
                 $0.append(Point(x, $1))
             }
         }.filter { $0 != at }.reduce(into: 0) {
-            if $1.x >= 0 && $1.x < size && $1.y > 0 && $1.y < size {
+            if $1.x >= 0 && $1.x < size && $1.y >= 0 && $1.y < size {
                 $0 += self[$1] >= 0 ? 1 : 0
             }
         }

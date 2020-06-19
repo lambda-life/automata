@@ -108,4 +108,30 @@ final class UniverseTests: XCTestCase {
             XCTAssertEqual(0, self.universe.grid[.init(5, 6)])
         }
     }
+    
+    func testAnotherFourDies() {
+        let expectDies = expectation(description: "")
+        let expectBorn = expectation(description: "")
+        expectDies.expectedFulfillmentCount = 2
+        expectBorn.expectedFulfillmentCount = 2
+        universe.born.sink { _ in
+            expectBorn.fulfill()
+        }.store(in: &subs)
+        universe.die.sink { _ in
+            expectDies.fulfill()
+        }.store(in: &subs)
+        universe.grid[.init(0, 0)] = 0
+        universe.grid[.init(1, 0)] = 0
+        universe.grid[.init(0, 1)] = 0
+        universe.grid[.init(1, 1)] = 0
+        universe.grid[.init(1, 2)] = 0
+        universe.tick()
+        waitForExpectations(timeout: 1) { _ in
+            XCTAssertEqual(-1, self.universe.grid[.init(1, 1)])
+            XCTAssertEqual(-1, self.universe.grid[.init(0, 1)])
+            
+            XCTAssertEqual(0, self.universe.grid[.init(0, 2)])
+            XCTAssertEqual(0, self.universe.grid[.init(2, 1)])
+        }
+    }
 }
