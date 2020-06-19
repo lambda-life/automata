@@ -30,4 +30,18 @@ final class StatusTests: XCTestCase {
         universe.tick()
         waitForExpectations(timeout: 1)
     }
+    
+    func testOldest() {
+        let expect = expectation(description: "")
+        universe.grid[.init(0, 0)] = 2
+        universe.grid[.init(1, 0)] = 3
+        universe.grid[.init(0, 1)] = 1
+        universe.grid[.init(1, 1)] = 0
+        universe.oldest.dropFirst().sink {
+            XCTAssertEqual(4, $0)
+            expect.fulfill()
+        }.store(in: &subs)
+        universe.tick()
+        waitForExpectations(timeout: 1)
+    }
 }

@@ -5,6 +5,10 @@ struct Grid {
         .init(items.map { $0.filter { $0 >= 0 }.count }.reduce(0, +)) / .init(items.count * items.count)
     }
     
+    var oldest: Int {
+        items.flatMap { $0 }.max() ?? 0
+    }
+    
     private(set) var items: [[Int]]
     
     init(size: Int) {

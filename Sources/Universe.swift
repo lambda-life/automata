@@ -7,11 +7,13 @@ public final class Universe {
     public let born = PassthroughSubject<Point, Never>()
     public let die = PassthroughSubject<Point, Never>()
     public let generation = CurrentValueSubject<Int, Never>(0)
+    public let oldest = CurrentValueSubject<Int, Never>(0)
     public let percent = CurrentValueSubject<CGFloat, Never>(0)
     
     var grid: Grid {
         didSet {
             percent.value = grid.percent
+            oldest.value = grid.oldest
         }
     }
     
