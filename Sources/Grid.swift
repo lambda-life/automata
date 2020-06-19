@@ -1,8 +1,10 @@
 import Foundation
 
 public struct Grid {
+    public var size: Int { items.count }
+    
     public var percent: CGFloat {
-        .init(items.map { $0.filter { $0 >= 0 }.count }.reduce(0, +)) / .init(items.count * items.count)
+        .init(items.map { $0.filter { $0 >= 0 }.count }.reduce(0, +)) / .init(size * size)
     }
     
     private(set) var items: [[Int]]
@@ -17,7 +19,7 @@ public struct Grid {
                 $0.append(Point(x, $1))
             }
         }.filter { $0 != at }.reduce(into: 0) {
-            if $1.x >= 0 && $1.x < items.count && $1.y > 0 && $1.y < items.count {
+            if $1.x >= 0 && $1.x < size && $1.y > 0 && $1.y < size {
                 $0 += self[$1] >= 0 ? 1 : 0
             }
         }
