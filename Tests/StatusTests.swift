@@ -17,7 +17,7 @@ final class StatusTests: XCTestCase {
             XCTAssertEqual(0.5, $0)
             expect.fulfill()
         }.store(in: &subs)
-        universe.seed(50)
+        universe.random(50)
         waitForExpectations(timeout: 1)
     }
     

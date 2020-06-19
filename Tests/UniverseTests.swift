@@ -22,7 +22,7 @@ final class UniverseTests: XCTestCase {
             expect.fulfill()
         }.store(in: &subs)
         
-        universe.seed(5)
+        universe.random(5)
         waitForExpectations(timeout: 1)
     }
     

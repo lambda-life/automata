@@ -21,9 +21,9 @@ public final class Universe {
         grid = .init(size: size)
     }
     
-    public func seed(_ count: Int) {
+    public func random(_ seed: Int) {
         var grid = self.grid
-        (0 ..< count).forEach { _ in
+        (0 ..< seed).forEach { _ in
             var point: Point
             repeat {
                 point = .init(.random(in: 0 ..< grid.items.count), .random(in: 0 ..< grid.items.count))
@@ -32,6 +32,11 @@ public final class Universe {
             born.send(point)
         }
         self.grid = grid
+    }
+    
+    public func seed(_ point: Point) {
+        grid[point] = 0
+        born.send(point)
     }
     
     public func tick() {
