@@ -1,21 +1,12 @@
 import Foundation
 
-struct Cell: Life {
-    var active: Bool { life.active }
+struct Cell: Life, Equatable {
+    var automaton: Automaton? { life.automaton }
     var age: Int { life.age }
     
-    @discardableResult mutating func die() -> Life {
-        life = life.die()
+    @discardableResult mutating func contact(_ cells: [Automaton: Int]) -> Life {
+        life = life.contact(cells)
         return self
-    }
-    
-    @discardableResult mutating func live() -> Life {
-        life = life.live()
-        return self
-    }
-    
-    func belongs(to: Automaton) -> Bool {
-        life.belongs(to: to)
     }
     
     private var life: Life
@@ -25,46 +16,33 @@ struct Cell: Life {
     }
     
     static func alive(automaton: Automaton) -> Self {
-        Self(life: Live(automaton: automaton, age: 0))
+        Self(life: Live(automaton: automaton))
+    }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.automaton == rhs.automaton && lhs.age == rhs.age
     }
 }
 
 private struct Live: Life {
+    private(set) weak var automaton: Automaton?
     let age: Int
-    let active = true
-    private weak var automaton: Automaton!
     
-    init(automaton: Automaton, age: Int) {
+    init(automaton: Automaton, age: Int = 0) {
         self.automaton = automaton
         self.age = age
     }
     
-    func die() -> Life {
-        Dead()
-    }
-    
-    func live() -> Life {
-        Live(automaton: automaton, age: age + 1)
-    }
-    
-    func belongs(to: Automaton) -> Bool {
-        automaton === to
+    func contact(_ cells: [Automaton: Int]) -> Life {
+        cells.count == 2 || cells.count == 3 ? Live(automaton: automaton!, age: age + 1) : Dead()
     }
 }
 
 private struct Dead: Life {
+    private(set) weak var automaton: Automaton?
     let age = -1
-    let active = false
     
-    func die() -> Life {
-        self
-    }
-    
-    func live() -> Life {
-        self
-    }
-    
-    func belongs(to: Automaton) -> Bool {
-        false
+    func contact(_ cells: [Automaton: Int]) -> Life {
+        cells.count == 3 ? Live(automaton: cells.sorted { $0.1 > $1.1 }.first!.0) : self
     }
 }

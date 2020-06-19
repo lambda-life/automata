@@ -6,6 +6,7 @@ public final class Universe {
     public var size: Int { grid.items.count }
     public let born = PassthroughSubject<Point, Never>()
     public let die = PassthroughSubject<Point, Never>()
+    public let cell = PassthroughSubject<(Life, Point), Never>()
     public let generation = CurrentValueSubject<Int, Never>(0)
     public let oldest = CurrentValueSubject<Int, Never>(0)
     public let percent = CurrentValueSubject<CGFloat, Never>(0)
@@ -27,7 +28,7 @@ public final class Universe {
             var point: Point
             repeat {
                 point = .init(.random(in: 0 ..< grid.items.count), .random(in: 0 ..< grid.items.count))
-            } while grid[point].active
+            } while grid[point].automaton != nil
             grid[point] = .alive(automaton: automaton)
             born.send(point)
         }
@@ -46,19 +47,8 @@ public final class Universe {
                 $0.append(Point(x, $1))
             }
         }.forEach {
-            if grid[$0] >= 0 {
-                switch grid.contact($0) {
-                case 2, 3:
-                    next[$0] += 1
-                default:
-                    next[$0] = -1
-                    die.send($0)
-                }
-            } else {
-                if grid.contact($0) == 3 {
-                    next[$0] = 0
-                    born.send($0)
-                }
+            if grid[$0] != (next[$0].contact(grid.contact($0)) as! Cell) {
+                cell.send((next[$0], $0))
             }
         }
         grid = next

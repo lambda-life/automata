@@ -4,11 +4,13 @@ import Combine
 
 final class EditTests: XCTestCase {
     private var universe: Universe!
+    private var automaton: Automaton!
     private var subs: Set<AnyCancellable>!
     
     override func setUp() {
         universe = .init(size: 10)
         subs = .init()
+        automaton = .init()
     }
     
     func testSeed() {

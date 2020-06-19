@@ -1,10 +1,8 @@
 import Foundation
 
-protocol Life {
-    var active: Bool { get }
+public protocol Life {
+    var automaton: Automaton? { get }
     var age: Int { get }
     
-    mutating func die() -> Life
-    mutating func live() -> Life
-    func belongs(to: Automaton) -> Bool
+    mutating func contact(_ cells: [Automaton: Int]) -> Life
 }
