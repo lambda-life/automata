@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Life {
+protocol Life {
     var automaton: Automaton? { get }
     var age: Int { get }
     

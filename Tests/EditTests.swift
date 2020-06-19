@@ -21,8 +21,7 @@ final class EditTests: XCTestCase {
             expectPercent.fulfill()
         }.store(in: &subs)
         universe.cell.sink {
-            XCTAssertEqual(self.automaton, $0.0.automaton)
-            XCTAssertEqual(0, $0.0.age)
+            XCTAssertEqual(self.automaton, $0.0)
             XCTAssertEqual(.init(0, 0), $0.1)
             expectBorn.fulfill()
         }.store(in: &subs)
