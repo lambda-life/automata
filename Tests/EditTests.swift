@@ -14,18 +14,14 @@ final class EditTests: XCTestCase {
     }
     
     func testSeed() {
-        let expectPercent = expectation(description: "")
-        let expectBorn = expectation(description: "")
-        universe.percent.dropFirst().sink {
-            XCTAssertEqual(0.01, $0)
-            expectPercent.fulfill()
-        }.store(in: &subs)
+        let expect = expectation(description: "")
         universe.cell.sink {
             XCTAssertEqual(self.automaton, $0.0)
             XCTAssertEqual(.init(0, 0), $0.1)
-            expectBorn.fulfill()
+            expect.fulfill()
         }.store(in: &subs)
         universe.seed(.init(0, 0), automaton: automaton)
+        XCTAssertEqual(0.01, universe.percent(automaton))
         waitForExpectations(timeout: 1) { _ in
             XCTAssertEqual(0, self.universe.grid[.init(0, 0)].age)
             XCTAssertEqual(self.automaton, self.universe.grid[.init(0, 0)].automaton)

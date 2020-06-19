@@ -7,11 +7,9 @@ public final class Universe {
     public let cell = PassthroughSubject<(Automaton?, Point), Never>()
     public let generation = CurrentValueSubject<Int, Never>(0)
     public let oldest = CurrentValueSubject<Int, Never>(0)
-    public let percent = CurrentValueSubject<CGFloat, Never>(0)
     
     var grid: Grid {
         didSet {
-            percent.value = grid.percent
             oldest.value = grid.oldest
         }
     }
@@ -51,5 +49,9 @@ public final class Universe {
         }
         grid = next
         generation.value += 1
+    }
+    
+    public func percent(_ of: Automaton) -> CGFloat {
+        grid.percent(of)
     }
 }

@@ -14,13 +14,8 @@ final class StatusTests: XCTestCase {
     }
     
     func testPercent() {
-        let expect = expectation(description: "")
-        universe.percent.dropFirst().sink {
-            XCTAssertEqual(0.5, $0)
-            expect.fulfill()
-        }.store(in: &subs)
         universe.random(50, automaton: automaton)
-        waitForExpectations(timeout: 1)
+        XCTAssertEqual(0.5, universe.percent(automaton))
     }
     
     func testGeneration() {
