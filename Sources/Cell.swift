@@ -1,10 +1,10 @@
 import Foundation
 
-struct Cell: Life, Equatable {
+struct Cell: Life {
     var automaton: Automaton? { life.automaton }
     var age: Int { life.age }
     
-    @discardableResult mutating func contact(_ cells: [Automaton: Int]) -> Life {
+    @discardableResult mutating func contact(_ cells: [Automaton]) -> Life {
         life = life.contact(cells)
         return self
     }
@@ -18,10 +18,6 @@ struct Cell: Life, Equatable {
     static func alive(automaton: Automaton) -> Self {
         Self(life: Live(automaton: automaton))
     }
-    
-    static func == (lhs: Self, rhs: Self) -> Bool {
-        lhs.automaton == rhs.automaton && lhs.age == rhs.age
-    }
 }
 
 private struct Live: Life {
@@ -33,7 +29,7 @@ private struct Live: Life {
         self.age = age
     }
     
-    func contact(_ cells: [Automaton: Int]) -> Life {
+    func contact(_ cells: [Automaton]) -> Life {
         cells.count == 2 || cells.count == 3 ? Live(automaton: automaton!, age: age + 1) : Dead()
     }
 }
@@ -42,7 +38,9 @@ private struct Dead: Life {
     private(set) weak var automaton: Automaton?
     let age = -1
     
-    func contact(_ cells: [Automaton: Int]) -> Life {
-        cells.count == 3 ? Live(automaton: cells.sorted { $0.1 > $1.1 }.first!.0) : self
+    func contact(_ cells: [Automaton]) -> Life {
+        cells.count == 3 ? Live(automaton: cells.reduce(into: [:]) {
+            $0[$1] = $0[$1, default: 0] + 1
+        }.sorted { $0.1 > $1.1 }.first!.0) : self
     }
 }

@@ -4,8 +4,6 @@ import Combine
 
 public final class Universe {
     public var size: Int { grid.items.count }
-    public let born = PassthroughSubject<Point, Never>()
-    public let die = PassthroughSubject<Point, Never>()
     public let cell = PassthroughSubject<(Life, Point), Never>()
     public let generation = CurrentValueSubject<Int, Never>(0)
     public let oldest = CurrentValueSubject<Int, Never>(0)
@@ -30,14 +28,14 @@ public final class Universe {
                 point = .init(.random(in: 0 ..< grid.items.count), .random(in: 0 ..< grid.items.count))
             } while grid[point].automaton != nil
             grid[point] = .alive(automaton: automaton)
-            born.send(point)
+            cell.send((grid[point], point))
         }
         self.grid = grid
     }
     
     public func seed(_ point: Point, automaton: Automaton) {
         grid[point] = .alive(automaton: automaton)
-        born.send(point)
+        cell.send((grid[point], point))
     }
     
     public func tick() {
@@ -47,7 +45,7 @@ public final class Universe {
                 $0.append(Point(x, $1))
             }
         }.forEach {
-            if grid[$0] != (next[$0].contact(grid.contact($0)) as! Cell) {
+            if grid[$0].automaton != next[$0].contact(grid.contact($0)).automaton {
                 cell.send((next[$0], $0))
             }
         }

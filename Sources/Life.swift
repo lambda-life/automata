@@ -4,5 +4,5 @@ public protocol Life {
     var automaton: Automaton? { get }
     var age: Int { get }
     
-    mutating func contact(_ cells: [Automaton: Int]) -> Life
+    mutating func contact(_ cells: [Automaton]) -> Life
 }

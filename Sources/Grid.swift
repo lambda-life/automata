@@ -15,14 +15,14 @@ struct Grid {
         items = .init(repeating: .init(repeating: .dead(), count: size), count: size)
     }
     
-    func contact(_ at: Point) -> [Automaton: Int] {
+    func contact(_ at: Point) -> [Automaton] {
         (at.x - 1 ... at.x + 1).flatMap { x in
             (at.y - 1 ... at.y + 1).reduce(into: []) {
                 $0.append(Point(x, $1))
             }
-        }.filter { $0 != at }.reduce(into: [:]) {
+        }.filter { $0 != at }.reduce(into: []) {
             guard $1.x >= 0 && $1.x < items.count && $1.y >= 0 && $1.y < items.count, let automaton = self[$1].automaton else { return }
-            $0[automaton] = $0[automaton, default: 0] + 1
+            $0.append(automaton)
         }
     }
     

@@ -20,13 +20,16 @@ final class EditTests: XCTestCase {
             XCTAssertEqual(0.01, $0)
             expectPercent.fulfill()
         }.store(in: &subs)
-        universe.born.sink {
-            XCTAssertEqual(.init(0, 0), $0)
+        universe.cell.sink {
+            XCTAssertEqual(self.automaton, $0.0.automaton)
+            XCTAssertEqual(0, $0.0.age)
+            XCTAssertEqual(.init(0, 0), $0.1)
             expectBorn.fulfill()
         }.store(in: &subs)
-        universe.seed(.init(0, 0))
+        universe.seed(.init(0, 0), automaton: automaton)
         waitForExpectations(timeout: 1) { _ in
-            XCTAssertEqual(0, self.universe.grid[.init(0, 0)])
+            XCTAssertEqual(0, self.universe.grid[.init(0, 0)].age)
+            XCTAssertEqual(self.automaton, self.universe.grid[.init(0, 0)].automaton)
         }
     }
 }

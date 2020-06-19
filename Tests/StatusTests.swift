@@ -4,11 +4,13 @@ import Combine
 
 final class StatusTests: XCTestCase {
     private var universe: Universe!
+    private var automaton: Automaton!
     private var subs: Set<AnyCancellable>!
     
     override func setUp() {
         universe = .init(size: 10)
         subs = .init()
+        automaton = .init()
     }
     
     func testPercent() {
@@ -17,7 +19,7 @@ final class StatusTests: XCTestCase {
             XCTAssertEqual(0.5, $0)
             expect.fulfill()
         }.store(in: &subs)
-        universe.random(50)
+        universe.random(50, automaton: automaton)
         waitForExpectations(timeout: 1)
     }
     
@@ -33,12 +35,14 @@ final class StatusTests: XCTestCase {
     
     func testOldest() {
         let expect = expectation(description: "")
-        universe.grid[.init(0, 0)] = 2
-        universe.grid[.init(1, 0)] = 3
-        universe.grid[.init(0, 1)] = 1
-        universe.grid[.init(1, 1)] = 0
+        universe.grid[.init(0, 0)] = .alive(automaton: automaton)
+        universe.grid[.init(1, 0)] = .alive(automaton: automaton)
+        universe.grid[.init(0, 1)] = .alive(automaton: automaton)
+        universe.grid[.init(1, 1)] = .alive(automaton: automaton)
+        universe.tick()
+        universe.tick()
         universe.oldest.dropFirst().sink {
-            XCTAssertEqual(4, $0)
+            XCTAssertEqual(3, $0)
             expect.fulfill()
         }.store(in: &subs)
         universe.tick()
