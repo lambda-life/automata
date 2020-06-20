@@ -6,13 +6,7 @@ public final class Universe {
     public var size: Int { grid.items.count }
     public let cell = PassthroughSubject<(Automaton?, Point), Never>()
     public let generation = CurrentValueSubject<Int, Never>(0)
-    public let oldest = CurrentValueSubject<Int, Never>(0)
-    
-    var grid: Grid {
-        didSet {
-            oldest.value = grid.oldest
-        }
-    }
+    var grid: Grid
     
     public init(size: Int) {
         grid = .init(size: size)
@@ -53,5 +47,9 @@ public final class Universe {
     
     public func percent(_ of: Automaton) -> CGFloat {
         grid.percent(of)
+    }
+    
+    public func oldest(_ of: Automaton) -> Int {
+        grid.oldest(of)
     }
 }

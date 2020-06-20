@@ -1,10 +1,6 @@
 import Foundation
 
 struct Grid {
-    var oldest: Int {
-        items.flatMap { $0.map(\.age) }.max() ?? 0
-    }
-    
     private(set) var items: [[Cell]]
     
     init(size: Int) {
@@ -24,6 +20,10 @@ struct Grid {
     
     func percent(_ of: Automaton) -> CGFloat {
         .init(items.map { $0.filter { $0.automaton == of }.count }.reduce(0, +)) / .init(items.count * items.count)
+    }
+    
+    func oldest(_ of: Automaton) -> Int {
+        items.flatMap { $0.filter { $0.automaton == of }.map(\.age) }.max() ?? 0
     }
     
     subscript(_ point: Point) -> Cell {
