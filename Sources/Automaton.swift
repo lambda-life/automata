@@ -1,7 +1,11 @@
 import Foundation
 
-public final class Automaton: Hashable {
-    public func hash(into: inout Hasher) {
+open class Automaton: Hashable {
+    public init() {
+        
+    }
+    
+    open func hash(into: inout Hasher) {
         
     }
     
