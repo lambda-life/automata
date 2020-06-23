@@ -53,10 +53,4 @@ public final class Universe {
     public func sequence(_ size: Int) -> [Point] {
         (0 ..< size).map { _ in grid.random }
     }
-    
-    public var all: [[Automaton?]] {
-        grid.items.map {
-            $0.map(\.automaton)
-        }
-    }
 }
