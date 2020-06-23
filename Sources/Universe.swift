@@ -51,6 +51,13 @@ public final class Universe {
     }
     
     public func sequence(_ size: Int) -> [Point] {
-        (0 ..< size).map { _ in grid.random }
+        var result = [Point]()
+        while result.count < size {
+            let point = grid.random
+            if !result.contains(point) {
+                result.append(point)
+            }
+        }
+        return result
     }
 }

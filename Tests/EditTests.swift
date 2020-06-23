@@ -50,9 +50,12 @@ final class EditTests: XCTestCase {
     
     func testRandomSequence() {
         let automaton = Automaton()
-        universe.random(70, automaton: automaton)
-        universe.sequence(20).forEach {
+        universe.random(20, automaton: automaton)
+        var received = [Point]()
+        universe.sequence(70).forEach {
             XCTAssertNil(self.universe.grid[$0].automaton)
+            XCTAssertFalse(received.contains($0))
+            received.append($0)
         }
     }
 }
