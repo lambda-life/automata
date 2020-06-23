@@ -26,6 +26,14 @@ struct Grid {
         items.flatMap { $0.filter { $0.automaton == of }.map(\.age) }.max() ?? 0
     }
     
+    var random: Point {
+        var point: Point
+        repeat {
+            point = .init(.random(in: 0 ..< items.count), .random(in: 0 ..< items.count))
+        } while self[point].automaton != nil
+        return point
+    }
+    
     subscript(_ point: Point) -> Cell {
         get {
             items[point.x][point.y]

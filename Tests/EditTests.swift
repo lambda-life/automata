@@ -47,4 +47,12 @@ final class EditTests: XCTestCase {
             XCTAssertEqual(b, self.universe.grid[.init(5, 4)].automaton)
         }
     }
+    
+    func testRandomSequence() {
+        let automaton = Automaton()
+        universe.random(70, automaton: automaton)
+        universe.sequence(20).forEach {
+            XCTAssertNil(self.universe.grid[$0].automaton)
+        }
+    }
 }

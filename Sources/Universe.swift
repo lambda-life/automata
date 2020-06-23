@@ -15,10 +15,7 @@ public final class Universe {
     public func random(_ seed: Int, automaton: Automaton) {
         var grid = self.grid
         (0 ..< seed).forEach { _ in
-            var point: Point
-            repeat {
-                point = .init(.random(in: 0 ..< grid.items.count), .random(in: 0 ..< grid.items.count))
-            } while grid[point].automaton != nil
+            let point = grid.random
             grid[point] = .alive(automaton: automaton)
             cell.send((automaton, point))
         }
@@ -51,5 +48,15 @@ public final class Universe {
     
     public func oldest(_ of: Automaton) -> Int {
         grid.oldest(of)
+    }
+    
+    public func sequence(_ size: Int) -> [Point] {
+        (0 ..< size).map { _ in grid.random }
+    }
+    
+    public var all: [[Automaton?]] {
+        grid.items.map {
+            $0.map(\.automaton)
+        }
     }
 }
