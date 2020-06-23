@@ -42,7 +42,7 @@ public final class Universe {
         generation.value += 1
     }
     
-    public func percent(_ of: Automaton) -> CGFloat {
+    public func percent(_ of: Automaton) -> Double {
         grid.percent(of)
     }
     

@@ -18,7 +18,7 @@ struct Grid {
         }
     }
     
-    func percent(_ of: Automaton) -> CGFloat {
+    func percent(_ of: Automaton) -> Double {
         .init(items.map { $0.filter { $0.automaton == of }.count }.reduce(0, +)) / .init(items.count * items.count)
     }
     
